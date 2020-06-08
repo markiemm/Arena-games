@@ -1,11 +1,13 @@
 maps = {"Beach", "Town"}
-game_mode = {"Team Deathmatch"}
+game_mode = {"Deathmatch"}
+
 
 --game board
 local Gameboard_Header = game.Workspace.Game_Elements.Model.Game_Board.SurfaceGui.Header.Title
 local Gameboard_Body = game.Workspace.Game_Elements.Model.Game_Board.SurfaceGui.Background.Body
 
-
+--require scripts
+Deathmatch_Script = require(script.Gamemodes.Deathmatch)
 
 --Config Variables
 local Min_Players = game.ServerStorage.Configuration.Min_Players
@@ -15,6 +17,7 @@ local Intermission_Countdown_Config = game.ServerStorage.Configuration.Intermiss
 local Players = game.ServerStorage.Game_Data.Players
 local Intermission_Countdown = game.ServerStorage.Game_Data.Intermission_Countdown
 local Chosen_Map = game.ServerStorage.Game_Data.Chosen_map
+local Chosen_Gamemode = game.ServerStorage.Game_Data.Chosen_gamemode
 
 --Set default Values
 Players.Value = 0
@@ -36,8 +39,28 @@ function Intermission()
 	Picking_Map()
 end
 
-function Choose_Gamemode()
+function Start_Gamemode()
+	wait(5)
+	if Chosen_Gamemode.Value == "Deathmatch"
+		then
+			print("Send reques to deathmatch script")  --  <<dev note: need to fix this
+		end
+end
+
+
+
+function Chooseing_Gamemode()
 	print("Choosing gamemode")
+	Gameboard_Body.Text = "Picking Gamemode..."
+	Gameboard_Header.Text = "..."
+	wait(4)
+	local value = math.random(1,#game_mode)
+	local gamemode_chosen = game_mode[value]
+	print("GameMode Chosen: " .. (gamemode_chosen))
+	Chosen_Gamemode.Value = gamemode_chosen
+	Gameboard_Header.Text = "Gamemode Chosen"
+	Gameboard_Body.Text = (gamemode_chosen)
+	Start_Gamemode()
 end
 	
 	
@@ -50,8 +73,7 @@ function Spawning_Map()
 			Gameboard_Header.Text = "Map chosen..."
 			Gameboard_Body.Text = "Beach"
 			wait(3)
-			Choose_Gamemode()
-			
+			Chooseing_Gamemode()
 		end
 	if Chosen_Map.Value == "Town"
 		then game.ServerStorage.Maps.Town.Parent = workspace
@@ -59,7 +81,7 @@ function Spawning_Map()
 			Gameboard_Header.Text = "Map chosen..."
 			Gameboard_Body.Text = "Town"
 			wait(3)
-			Choose_Gamemode()
+			Chooseing_Gamemode()
 		end
 end
 
